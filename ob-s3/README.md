@@ -107,5 +107,8 @@
 #### ***Using our custom script:***
 TBD
 
+#### ***Plik (wetransfer like):***
+[How to use Plik S3 Data backend with OVHcloud Object Storage](plik-object-storage-s3.md)
+
 #### ***Veeam Backup & Replication:***
-[How to use Veeam Backup & Replication with OVHcloud Object Storage](veeam-b-and-r-object-storage.md)
+[How to use Veeam Backup & Replication with OVHcloud Object Storage](veeam-object-storage-s3.md)
