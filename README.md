@@ -1,3 +1,7 @@
 # I miei appunti per i techlab
 
-- [**Plik**, una soluzione _open source_ e _sicura_ per la **condivisione file privata**, compatibile con l'archiviazione su _Object Storage_](appunti/ob-s3/README.md)
+- TODOs
+
+> _i tempi che furono ..._
+
+- [**Plik**, una soluzione _open source_ e _sicura_ per la **condivisione file privata**, compatibile con l'archiviazione su _Object Storage_](appunti/object_storage_swifts3-plik/README.md) Openstack Swift compatibile con le API S3
