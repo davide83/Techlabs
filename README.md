@@ -1,6 +1,6 @@
 # I miei appunti per i techlab
 
-- TODOs
+- \!/ _lavori in corso_ \!/
 
 > _i tempi che furono ..._
 
