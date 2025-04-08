@@ -41,8 +41,7 @@ case $METHOD in
 esac
 
 # Tests OS TYPE
-# https://megamorf.gitlab.io/2019/06/10/working-with-checksums-on-macos-and-linux/
-# https://gist.github.com/bilalelreda/d82c8696cb585d2b698805e1e6d6cdf4
+#https://gist.github.com/davide83/8e448804b75935aa3455b4ef9116d776
 if [[ "$OSTYPE" == "darwin"* ]]; then
         # Mac OSX
         MY_OS_SHA1cmd='shasum -a 1'
