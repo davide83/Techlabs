@@ -23,7 +23,8 @@ source scripts/ovhrc
 Esportiamo l'**App ID** per il modello **mistral** AI Deploy
 ```bash
 #export OVHAI_APP_ID_MISTRAL=ce566c85-a989-4294-8d40-8b035d5f3e32
-export OVHAI_APP_ID_MISTRAL=11c0ef55-6b44-4a12-9875-7ef89b437ae6
+#export OVHAI_APP_ID_MISTRAL=11c0ef55-6b44-4a12-9875-7ef89b437ae6
+export OVHAI_APP_ID_MISTRAL=a8e6ac7f-aa00-48c7-bff7-62e65301425b
 ```
 
 ## Per il modello deepseek
@@ -35,7 +36,8 @@ export OVHAI_APP_ID_MISTRAL=11c0ef55-6b44-4a12-9875-7ef89b437ae6
 Esportiamo l'**App ID** per il modello **deepseek** AI Deploy
 ```bash
 #export OVHAI_APP_ID_DEEPSEEK=xxxxx
-export OVHAI_APP_ID_DEEPSEEK=d7ceef93-ccd1-4ee8-b548-352f3672a728
+#export OVHAI_APP_ID_DEEPSEEK=d7ceef93-ccd1-4ee8-b548-352f3672a728
+export OVHAI_APP_ID_DEEPSEEK=97898825-c138-4a0e-80ef-551b1e4cacce
 ```
 
 # Stato e log dell'App ID
@@ -71,7 +73,7 @@ curl https://$OVHAI_APP_ID_MISTRAL.app.gra.ai.cloud.ovh.net/v1/chat/completions 
         "model": "mistralai/Mistral-Small-24B-Instruct-2501",
         "messages": [
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "Give me the name of OVHcloud’s founder."}
+            {"role": "user", "content": "Tell me more about how OVHcloud is a valid europeean alternative to USA or China hyperscalers and about it’s founder too."}
         ],
         "stream": false
     }'
@@ -81,29 +83,27 @@ curl https://$OVHAI_APP_ID_MISTRAL.app.gra.ai.cloud.ovh.net/v1/chat/completions 
 Ritornerà un risultato simile al seguente
 ```json
 {
-    "id":"chatcmpl-5817e2febf86fda42b99328954485940",
+    "id":"chatcmpl-70b3e6dbfcca51626786d3a88075af4b",
     "object":"chat.completion",
-    "created":1741521522,
+    "created":1744122971,
     "model":"mistralai/Mistral-Small-24B-Instruct-2501",
     "choices":[{
         "index":0,
         "message":{
             "role":"assistant",
             "reasoning_content":null,
-            "content":"The founder of OVHcloud is Octave Klaba. He started the company in 1999, and it has since grown to become one of the world's leading cloud service providers.",
+            "content":"OVHcloud is indeed a prominent European alternative to hyperscalers based in the USA or China. Here are some key points about OVHcloud and its founder:\n\n### OVHcloud Overview\n\n1. **European Roots**: OVHcloud is headquartered in Roubaix, France, and has a strong presence across Europe. This makes it a viable option for businesses looking to comply with European data sovereignty and privacy regulations, such as GDPR.\n\n2. **Data Centers**: OVHcloud operates numerous data centers across Europe, ensuring low-latency and high-performance services for European customers. This extensive infrastructure helps in providing reliable and scalable cloud services.\n\n3. **Services**: The company offers a wide range of cloud services, including public cloud, private cloud, dedicated servers, and web hosting. They also provide additional services like AI, machine learning, and big data solutions.\n\n4. **Sustainability**: OVHcloud is committed to sustainability and has implemented various initiatives to reduce its carbon footprint. This includes using renewable energy sources and optimizing data center efficiency.\n\n5. **Security and Compliance**: OVHcloud places a strong emphasis on security and compliance, offering services that meet stringent European and international standards. This includes certifications like ISO 27001 and compliance with GDPR.\n\n### Founder: Octave Klaba\n\n1. **Background**: Octave Klaba is the founder and CEO of OVHcloud. Born in Poland, Klaba moved to France and started his career in IT. He founded OVH (now OVHcloud) in 1999.\n\n2. **Vision**: Klaba's vision was to create a European cloud provider that could compete with global giants like Amazon Web Services (AWS), Microsoft Azure, and Google Cloud. He aimed to offer high-quality, reliable, and cost-effective cloud services tailored to European needs.\n\n3. **Innovation**: Under Klaba's leadership, OVHcloud has continuously innovated, introducing new technologies and services to stay competitive. The company has also invested heavily in research and development.\n\n4. **Growth**: OVHcloud has grown significantly under Klaba's guidance, expanding its data center footprint and service offerings. The company has also made strategic acquisitions to enhance its capabilities and market reach.\n\n5. **Community and Culture**: Klaba is known for fostering a strong company culture focused on innovation, customer satisfaction, and employee well-being. OVHcloud has a reputation for being a dynamic and forward-thinking organization.\n\n### Conclusion\n\nOVHcloud stands out as a strong European alternative to USA and China-based hyperscalers, offering a range of cloud services with a focus on data sovereignty, security, and sustainability. Octave Klaba's leadership and vision have been instrumental in the company's growth and success, making OVHcloud a key player in the European cloud market.",
             "tool_calls":[]
-        },"logprobs":null,
+        },
+        "logprobs":null,
         "finish_reason":"stop",
         "stop_reason":null
     }],
     "usage":{
-        "prompt_tokens":22,
-        "total_tokens":63,
-        "completion_tokens":41,
-        "prompt_tokens_details":null
+        "prompt_tokens":39,"total_tokens":618,"completion_tokens":579,"prompt_tokens_details":null
     },
     "prompt_logprobs":null
-}
+} 
 ```
 
 ## Per il modello deepseek
