@@ -5,8 +5,7 @@
 #### OVHcloud AI ACCESS TOKEN
 #export MY_OVHAI_ACCESS_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-#ovhai app run \
-/Users/dletizia/bin/ovhai app run \
+ovhai app run \
     --name techlab-ai-vllm-mistral-small \
     --default-http-port 8000 \
     --label techlab/vllm=mistral \
