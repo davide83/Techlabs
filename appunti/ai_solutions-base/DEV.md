@@ -49,7 +49,7 @@ ovhai app get $OVHAI_APP_ID_MISTRAL
 ```
 ```bash
 #ovhai app logs $OVHAI_APP_ID_DEEPSEEK
-ovhai app get $OVHAI_APP_ID_DEEPSEEK
+ovhai app logs $OVHAI_APP_ID_DEEPSEEK
 ```
 
 Visualizziamo i log dell'**App ID** per i modelli AI Deploy
