@@ -1,6 +1,6 @@
 # I miei appunti per i techlab
 
-- \!/ _lavori in corso_ \!/
+- [ai_solutions-vllm-base](appunti/ai_solutions-base/README.md)
 
 > _i tempi che furono ..._
 
