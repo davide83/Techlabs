@@ -1,9 +1,9 @@
 # I miei appunti per i techlab
 
-- [vpc_opnsense-base](appunti/vpc_opnsense-base/README.md)
-- [vpc_vrs-efs](appunti/vpc_vrs-efs/README.md)
-- [vpc_openstack-base](appunti/vpc_openstack-base/README.md)
-- [ai_solutions-vllm-base](appunti/ai_solutions-base/README.md)
+- [vpc_vrackservices-efs](appunti/vpc_vrs-efs/README.md) **🚚 vRack Services - VRS - Enterprise File Storage (NetApp) exposed privately to your VPC 🚚**
+- [vpc_openstack-opnsense](appunti/vpc_openstack-opnsense/README.md) **🛠️ virtual private cloud - VPC Custom - importare ed eseguire un'immagine tipo OPNsense per una politica di sicurezza avanzata e personalizzata 🛠️**
+- [vpc_openstack-base](appunti/vpc_openstack-base/README.md) **🛰️ virtual private cloud - VPC L3 Services - distribuito in molteplici regioni e zone di disponibilità 🛰️**
+- [ai_solutions-vllm-base](appunti/ai_solutions-base/README.md) **🚀 un unico comando per distribuire e servire un LLM 🚀**
 
 > _i tempi che furono ..._
 
