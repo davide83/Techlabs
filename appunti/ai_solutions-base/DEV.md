@@ -37,7 +37,8 @@ Esportiamo l'**App ID** per il modello **deepseek** AI Deploy
 ```bash
 #export OVHAI_APP_ID_DEEPSEEK=xxxxx
 #export OVHAI_APP_ID_DEEPSEEK=d7ceef93-ccd1-4ee8-b548-352f3672a728
-export OVHAI_APP_ID_DEEPSEEK=97898825-c138-4a0e-80ef-551b1e4cacce
+#export OVHAI_APP_ID_DEEPSEEK=97898825-c138-4a0e-80ef-551b1e4cacce
+export OVHAI_APP_ID_DEEPSEEK=a8e6ac7f-aa00-48c7-bff7-62e65301425b
 ```
 
 # Stato e log dell'App ID
@@ -197,7 +198,7 @@ curl -X 'POST' \
             "content": "Chi è il fondatore di OVHcloud e quali sono le recenti innovazioni del gruppo?",
             "role": "user"
         }
-    ],ß
+    ],
     "model": null,
     "seed": null,
     "stream": false,

@@ -1,5 +1,8 @@
 # I miei appunti per i techlab
 
+- [vpc_opnsense-base](appunti/vpc_opnsense-base/README.md)
+- [vpc_vrs-efs](appunti/vpc_vrs-efs/README.md)
+- [vpc_openstack-base](appunti/vpc_openstack-base/README.md)
 - [ai_solutions-vllm-base](appunti/ai_solutions-base/README.md)
 
 > _i tempi che furono ..._
