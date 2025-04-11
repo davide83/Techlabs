@@ -1,0 +1,172 @@
+Techlabs' VPC as vrs domain
+===
+
+the VPC must be a CDIR /24 subnet per region as limited by vRack Services spec
+
+# vRack Services
+
+## requisites
+
+| # | Region/AZ | Network Name | Network Address | Usable Host Range | Broadcast Address: |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| 1 | de1 | Private Subnet 10-42-16-0_24 | 10.42.16.0 | 10.42.16.1 - 10.42.16.254 | 10.42.16.255 |
+| 2 | gra11 | Private Subnet 10-42-32_0_24 | 10.42.32.0 | 10.42.1.1 - 10.42.1.254 | 10.42.1.255 |
+| 3 | eu-west-mil | Private Subnet 10-42-48-0_24 | 10.42.48.0 | 10.42.48.1 - 10.42.48.254 | 10.42.2.255 |
+| 4 | eu-west-par | Private Subnet 10-42-64_0_24 | 10.42.64.0 | 10.42.64.1 - 10.42.64.254 | 10.42.64.255 |
+
+### deploy vrs net
+
+vrs subnet service prefix must be between 27/ and /29 as subset of VPC must be /24
+
+
+All 16 of the Possible /28 Networks for 10.42.16.*
+```
+Network Address	Usable Host Range	Broadcast Address:
+*dvr/gw*10.42.16.0	10.42.16.1 - 10.42.16.14	10.42.16.15
+*vrs*10.42.16.16	10.42.16.17 - 10.42.16.30	10.42.16.31
+10.42.16.32	10.42.16.33 - 10.42.16.46	10.42.16.47
+10.42.16.48	10.42.16.49 - 10.42.16.62	10.42.16.63
+*dhcp*10.42.16.64	10.42.16.64 - ...
+                   	... - 10.42.16.254	10.42.16.255
+```
+
+| # | Region/AZ | Network Name | Network Address | Usable Host Range | Broadcast Address: |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| 1 | de1 | OS DvR (gw) | 10.42.16.0/28 | 10.42.16.1 - 10.42.16.16 | 10.42.0.15 |
+| 2 | de1 | vRack Services | 10.42.16.16/28 | 10.42.16.17 - 10.42.1.30 | 10.42.1.31 |
+| 3 | de1 | DHCP allocation pool | . | 10.42.16.64 - 10.42.16.254 | 10.42.16.255 |
+
+> See `../vpc_openstack-base` folder
+
+### deploy vrs
+
+#### Creazione di una subnet
+
+Per creare una subnet, è necessario immettere 4 informazioni:
+
+- Il nome della sottorete _`string`_.
+- Intervallo di indirizzi sottorete _`CIDR`_. Deve essere una **/24**!
+- Sottoinsieme intervallo di indirizzi servizi: l'intervallo degli indirizzi riservato ai servizi gestiti. L'intervallo deve essere un sottoinsieme dell'intervallo degli indirizzi della sottorete e la relativa dimensione deve essere compresa tra **/27** e **/29**.
+
+> Gli indirizzi di questo intervallo non devono essere utilizzati da altri nodi connessi alla **vRack**.
+>
+> Una **VLAN** su cui è possibile esporre questa subnet. È possibile scegliere di non disporre di una _VLAN_.
+
+![alt text](images/techlab-vrs-lim.png)
+
+#### 
+
+# EFS
+
+NFS volumes (EFS) as vrack services
+
+## requisites
+- `EFS (storageNetApp) id` in the same region
+- `vRack Services id` in the same region
+- `telnet 10.42.16.16 2049`
+
+https://docs.netapp.com/us-en/ontap/nfs-config/test-access-client-systems-task.html
+https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/4/html/reference_guide/ch-nfs#ch-nfs
+
+### deploy vrs bastion
+
+> See `../vpc_openstack-base` folder
+
+#### Network Topology
+
+![OS Security Groups](images/techlab-VPC_VRS-lim-network_topology.png)
+
+## on node as linux NFS client
+
+```bash
+ubuntu@bastion-vrs-lim:~$ telnet 10.42.16.16 2049
+Trying 10.42.16.16...
+Connected to 10.42.16.16.
+Escape character is '^]'.
+^CConnection closed by foreign host.
+```
+
+1. Install the NFS client
+`sudo apt-get install nfs-common`
+2. Create a new folder
+`sudo mkdir -p /media/techlabEFSnfsVolumes/vpc-lim-efs1-nfs3_test_120g`
+3. NFS mount file server
+`sudo mount -t nfs -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp 10.42.16.16:/vpc-lim-efs1-nfs3_test_120g /media/techlabEFSnfsVolumes/vpc-lim-efs1-nfs3_test_120g`
+4. To keep the mount on reboot, add to the /etc/fstab file 
+`10.42.16.16:/vpc-lim-efs1-nfs3_test_120g /media/techlabEFSnfsVolumes/vpc-lim-efs1-nfs3_test_120g nfs defaults user _netdev bg`
+
+### Fio's benchmark
+
+Install fio - flexible I/O tester `sudo apt-get install fio`
+
+```bash
+fio \
+    --name=<testname> \
+    --filename=<filename> \
+    --size=40g \
+    --direct=1 \
+    --rw=<rw> \
+    --ioengine=libaio \
+    --fallocate=none \
+    --group_reporting \
+    --numjobs=<n> \
+    --bs=4k \
+    --iodepth=<d> \
+    --ramp_time=10 \
+    --runtime=50   
+```
+
+> `rw=write, randwrite; n=1, 10; d=16, 64;`
+
+```bash
+ubuntu@bastion-vpc-3042-lim:/media/techlabEFSnfsVolumes/vpc-lim-efs1-nfs3_test_120g$ sudo fio \
+    --name=ovhTest-vrsEFSlim-pci-w_40GB_1jobs \
+    --filename=/media/techlabEFSnfsVolumes/vpc-lim-efs1-nfs3_test_120g/test40G \
+    --size=40g \
+    --direct=1 \
+    --rw=write \
+    --ioengine=libaio \
+    --fallocate=none \
+    --group_reporting \
+    --runtime=50 0 \
+ovhTest-vrsEFSlim-pci-w_40GB_1jobs: (g=0): rw=write, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=libaio, iodepth=16
+fio-3.28
+Starting 1 process
+ovhTest-vrsEFSlim-pci-w_40GB_1jobs: Laying out IO file (1 file / 40960MiB)
+Jobs: 1 (f=1): [W(1)][100.0%][w=15.6MiB/s][w=3998 IOPS][eta 00m:00s]
+ovhTest-vrsEFSlim-pci-w_40GB_1jobs: (groupid=0, jobs=1): err= 0: pid=2567: Fri Mar 28 20:25:40 2025
+  write: IOPS=3999, BW=15.6MiB/s (16.4MB/s)(781MiB/50010msec); 0 zone resets
+    slat (usec): min=2, max=927, avg=10.26, stdev=11.65
+    clat (usec): min=415, max=72141, avg=3989.53, stdev=5567.56
+     lat (usec): min=427, max=72145, avg=3999.92, stdev=5567.19
+    clat percentiles (usec):
+     |  1.00th=[  594],  5.00th=[  701], 10.00th=[  775], 20.00th=[  898],
+     | 30.00th=[  996], 40.00th=[ 1106], 50.00th=[ 1254], 60.00th=[ 1450],
+     | 70.00th=[ 1663], 80.00th=[10552], 90.00th=[11076], 95.00th=[11600],
+     | 99.00th=[21365], 99.50th=[30278], 99.90th=[31589], 99.95th=[40633],
+     | 99.99th=[41157]
+   bw (  KiB/s): min=15815, max=16232, per=100.00%, avg=16003.53, stdev=81.08, samples=100
+   iops        : min= 3953, max= 4058, avg=4000.83, stdev=20.33, samples=100
+  lat (usec)   : 500=0.08%, 750=8.32%, 1000=21.93%
+  lat (msec)   : 2=44.14%, 4=1.44%, 10=0.27%, 20=19.57%, 50=4.26%
+  lat (msec)   : 100=0.01%
+  cpu          : usr=0.92%, sys=3.38%, ctx=147239, majf=0, minf=58
+  IO depths    : 1=0.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=100.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued rwts: total=0,200002,0,0 short=0,0,0,0 dropped=0,0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=16
+
+Run status group 0 (all jobs):
+  WRITE: bw=15.6MiB/s (16.4MB/s), 15.6MiB/s-15.6MiB/s (16.4MB/s-16.4MB/s), io=781MiB (819MB), run=50010-50010msec
+```
+
+## on kube as Persistent Volume w/ AccessMode ReadWriteMany or RWX  (ToDo)
+
+TODO
+
+https://help.ovhcloud.com/csm/en-public-cloud-kubernetes-configure-multi-attach-persistent-volumes-enterprise-file-storage?id=kb_article_view&sysparm_article=KB0065974
+
+# Object Storage (n/a)
+
+n/a
