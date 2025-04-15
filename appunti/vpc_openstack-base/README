@@ -51,7 +51,13 @@ by regional and zonal Public Cloud Service
 >
 > _NB_ 172.31.0.0/17 is used by ovh on public cloud networks for _internal_fip_subnet
 >
-> TODO add managed kube priv subnets reserved by ovh
+> _NB_ managed kube priv subnets reserved as [known-limits](https://help.ovhcloud.com/csm/it-public-cloud-kubernetes-using-vrack?id=kb_article_view&sysparm_article=KB0055388#known-limits)
+>
+> > 10.2.0.0/16 # Subnet used by pods
+> >
+> > 10.3.0.0/16 # Subnet used by services
+> >
+> > 172.17.0.0/16 # Subnet used by the Docker daemon
 
 ### VPC 10.42.0.0/16
 
