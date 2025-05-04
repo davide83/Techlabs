@@ -46,23 +46,10 @@ echo "CREATING VPC_BASTION_NAME: $VPC_BASTION_NAME"
 openstack server create \
   --description "OPN Host (VPC_opnsense-base) in $VPC_REGION_NAME" \
   --image $OPN_VM_IMAGE_NAME \
-  --flavor c3-4 \
-  --key-name $VPC_SSHKEY_NAME \
-  --nic $VPC_NET_GREEN_ID \
-  --nic $VPC_NET_RED_ID \
-  --availability-zone eu-west-par-c \
+  --flavor b3-16 \
+  --network $VPC_NET_GREEN_ID \
+  --network $VPC_NET_RED_ID \
+  --network $VPC_NET_PINK_ID \
+  --availability-zone eu-west-par-b \
   $VPC_BASTION_NAME
 
-VPC_BASTION_ID=$(openstack server show $VPC_BASTION_NAME -c id -f value)
-echo "VPC Bastion ID: $VPC_BASTION_ID"
-
-# PASS OR CREATE Bastion Host IPv4 as Floating IP 
-VPC_BASTION_FIP_ID=$(openstack floating ip create Ext-Net -c id -f value)
-VPC_BASTION_FIP_NAME=$(openstack floating ip show $VPC_BASTION_FIP_ID -c name -f value)
-VPC_BASTION_FIP_IPv4=$VPC_BASTION_FIP_NAME
-
-# Attach BASTION_FIP_IPv4 to Bastion Host instance
-openstack server add floating ip $VPC_BASTION_ID $VPC_BASTION_FIP_IPv4
-
-# End
-echo "VPC Bastion FIP: $VPC_BASTION_FIP_IPv4"
