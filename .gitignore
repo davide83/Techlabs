@@ -2,3 +2,4 @@
 .internal/
 appunti/ai_solutions-base/utils/ovhrc
 appunti/vpc_openstack-base/utils/ovhrc
+appunti/vpc_opnsense-base/utils/ovhrc

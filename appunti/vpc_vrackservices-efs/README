@@ -72,10 +72,6 @@ https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/4/html/referen
 
 > See `../vpc_openstack-base` folder
 
-#### Network Topology
-
-![OS Security Groups](images/techlab-VPC_VRS-lim-network_topology.png)
-
 ## on node as linux NFS client
 
 ```bash
