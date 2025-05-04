@@ -21,10 +21,10 @@ fi
 OPN_TMP_FILE_BZ2=$OPN_TMP_DIRECTORY/OPNsense-$OPN_VM_IMAGE_VERSION-ufs-$OPN_VM_IMAGE_CONSOLE-vm-$OPN_VM_IMAGE_ARCH.$OPN_VM_IMAGE_DISK_FORMAT.bz2
 
 # Echo
-echo "ECHO .> Downloading $OPN_VM_IMAGE_URL"
+echo "ECHO .> Downloading..."
 
 # Get OPN VM IMAGE (BZ2)
-wget \
+time wget \
     -O $OPN_TMP_FILE_BZ2 \
     --no-check-certificate \
     $OPN_VM_IMAGE_URL
@@ -35,11 +35,11 @@ echo "ECHO .> $OPN_TMP_FILE_BZ2 Downloaded!"
 # Extract OPN_TMP_FILE_BZ2 to OPN_TMP_FILE_$OPN_VM_IMAGE_DISK_FORMAT
 
 # Echo
-echo "ECHO .> Extracting $OPN_TMP_FILE_BZ2"
+echo "ECHO .> Extracting..."
 
 ORIGIN_ROOT_PATH=$(pwd)
 cd $OPN_TMP_DIRECTORY
-bzip2 -d $OPN_TMP_FILE_BZ2
+time bzip2 -d $OPN_TMP_FILE_BZ2
 cd $ORIGIN_ROOT_PATH
 
 # Set OPN TMP FILE vars

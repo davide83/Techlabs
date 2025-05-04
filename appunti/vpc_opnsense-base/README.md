@@ -467,8 +467,22 @@ Saving to: ‘/tmp/opnsense-images/OPNsense-25.1-ufs-efi-vm-amd64.qcow2.bz2’
 Default settings are `OPN_ISO_IMAGE_VERSION=25.1`, `OPN_ISO_IMAGE_ARCH=amd64`, `OPN_ISO_IMAGE_CONSOLE=dvd`, `OPN_ISO_IMAGE_DISK_FORMAT=iso`
 
 ```bash
-(techlab) dletizia@ovh vpc_opnsense-base % ./scripts/oscVPC-getImage-opnsenseISO.sh
+(techlab) dletizia@ovh vpc_opnsense-base % scripts/oscVPC-getImage-opnsenseISO.sh
+ECHO .> Downloading...
+--2025-05-04 20:51:26--  https://pkg.opnsense.org/releases/25.1/OPNsense-25.1-dvd-amd64.iso.bz2
+Resolving pkg.opnsense.org (pkg.opnsense.org)... 89.149.222.99, 2001:1af8:5300:a010:1::1
+Connecting to pkg.opnsense.org (pkg.opnsense.org)|89.149.222.99|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 521440733 (497M) [application/x-bzip2]
+Saving to: ‘/tmp/opnsense-images/OPNsense-25.1-dvd-amd64.iso.bz2’
 
+/tmp/opnsense-images/OPNs 100%[=====================================>] 497.28M   246MB/s    in 2.0s    
+
+2025-05-04 20:51:29 (246 MB/s) - ‘/tmp/opnsense-images/OPNsense-25.1-dvd-amd64.iso.bz2’ saved [521440733/521440733]
+
+ECHO .> /tmp/opnsense-images/OPNsense-25.1-dvd-amd64.iso.bz2 Downloaded!
+ECHO .> Extracting...
+ECHO .> /tmp/opnsense-images/OPNsense-25.1-dvd-amd64.iso Extracted!
 ```
 
 ## IMPORT VM IMAGE
@@ -552,6 +566,8 @@ DEPLOYING SSHKEY IN PAR ...
 >
 > `VPC_NET_NAME=pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID`
 
+#### deployAllOPNs'
+
 ```bash
 (techlab) dletizia@ovh vpc_openstack-opnsense % openstack server create \
   --image OPNsense-25.1-ufs-<efi|serial>-vm-amd64 \
@@ -570,7 +586,44 @@ DEPLOYING SSHKEY IN PAR ...
 
 ```
 
-# ISO Image via Openstack Horizon (ToDo)
+#### deployAllBastions'
+```bash
+(techlab) dletizia@ovh vpc_openstack-opnsense % openstack server create \
+  --image 'Ubuntu 24.04' \
+  --flavor c3-4 \
+  --network Ext-Net \
+  --network pn-VPC_opnsense-PAR-GREEN-2042 \
+  --availability-zone eu-west-par-<a|b|c> \
+  <opnsense-node-name>
+```
+
+```bash
+(techlab) dletizia@ovh vpc_openstack-opnsense % scripts/oscVPC-deployAllBastions.sh
+
+```
+
+# ISO Image via Openstack Horizon
+
+_NB_
+
+## _Scripted_
+Like other appliance, create the initial RAW image based on ISO in the region you want to deploy your cluster. For that :
+1. Download the Iso on opnsense site
+1. 1. see `scripts/oscVPC-getImage-opnsenseISO.sh` :- D
+2. Create the image of the iso : `openstack image create --disk-format iso --file opnsense.iso OPNsense-25.1.iso`
+2. 1. see `scripts/oscVPC-importImage-opnsenseISO.sh` :- D
+
+### _Not scripted_ yet!
+
+> `Openstack Horizon` is a friendly **GUI** for the above procedure :- )
+
+1. Create a instance that will boot on OPNsense iso : `openstack server create --image OPNsense-25.1.iso --flavor c3-4 OPNsense-25.1install --network Ext-Net`
+2. Create a 20Gb volume : `openstack volume create  --size 20 --bootable OPNsense-25.1install`
+3. Attach it to the instance : `openstack server add volume OPNsense-25.1install OPNsense-25.1install --dev /dev/vda`
+4. Proceed to the basic install of OPNsense via Horizon console : `WARNING proceed with installer user !!!!!!!!!!`
+5. Once OPNsense is installed stop the instance : `openstack server stop OPNsense-25.1install`
+6. Delete the instance : `openstack server delete OPNsense-25.1install`
+7. Create a new image based on the volume created before : `openstack image create --volume OPNsense-25.1install OPNsense-25.1`
 
 (ToDo)
 

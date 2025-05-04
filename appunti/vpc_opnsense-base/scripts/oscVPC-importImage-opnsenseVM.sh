@@ -13,9 +13,15 @@ OPN_TMP_DIRECTORY=/tmp/opnsense-images
 # Set OPN TMP FILE vars
 OPN_TMP_FILE_QCOW2=$OPN_TMP_DIRECTORY/OPNsense-$OPN_VM_IMAGE_VERSION-ufs-$OPN_VM_IMAGE_CONSOLE-vm-$OPN_VM_IMAGE_ARCH.qcow2
 
+# Echo
+echo "ECHO .> Importing..."
+
 # IMPORT VM IMAGE
 openstack image create \
     --container-format bare \
     --disk-format $OPN_VM_IMAGE_DISK_FORMAT \
     --file $OPN_TMP_FILE_QCOW2 \
     OPNsense-$OPN_VM_IMAGE_VERSION-ufs-$OPN_VM_IMAGE_CONSOLE-vm-$OPN_VM_IMAGE_ARCH
+
+# Echo
+echo "ECHO .> OPNsense-$OPN_VM_IMAGE_VERSION-ufs-$OPN_VM_IMAGE_CONSOLE-vm-$OPN_VM_IMAGE_ARCH Imported!"
