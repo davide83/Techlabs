@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#### VPC BASTIONS
+
+# ### EU - Italy
+
+# ## VPC BASTION 1 - MIL
+# VPC_REGION_NAME=MIL
+# echo "DEPLOYING BASTION IN $VPC_REGION_NAME ..."
+# scripts/oscVPC-deployBastion-mil.sh
+# echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
+
+# ### EU - Germany
+
+# ## VPC BASTION 2 - LIM
+# VPC_REGION_NAME=LIM
+# echo "DEPLOYING BASTION IN $VPC_REGION_NAME ..."
+# scripts/oscVPC-deployBastion-lim.sh
+# echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
+
+### EU - France
+
+# ## VPC BASTION 3 - GRA
+# echo "DEPLOYING BASTION IN $VPC_REGION_NAME ..."
+# scripts/oscVPC-deployBastion-gra.sh
+# echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
+
+## VPC BASTION 4 - PAR
+echo "DEPLOYING BASTION IN $VPC_REGION_NAME ..."
+scripts/oscVPC-deployBastion-par.sh
+echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
