@@ -12,6 +12,25 @@ Importeremo un'immagine personalizzata di un'_Appliance_ virtuale tipo **opnsens
 - - It requires an active RIPE/ARIN organization to be assigned
 - cambia directory `cd Teclabs/appunti/vpc_opnsense-base`
 
+# Use case - OPNsense Cluster in HA
+
+OPNsense Cluster in HA.
+
+Scarica l'immagine **ISO** OPNsense da [qui](https://opnsense.org/download/) selezionando le opzioni come da immagine seguente ![choose](images/opnsense-download-iso.png)
+
+Implementiamo il cluster con la seguente architettura ![todo](images/archicible.png)
+
+Sulla base degli indirizzi che sceglieremo per ler reti **WAN** _(RED)_, **LAN** _(GREEN)_ e **HA** _(PINK)_ e per convenzione con l'ambiente _openstack_ a cui delegheremo anche la gestione del servizio _DHCP_:
+- gli inidirizzi ip _GW_ saranno entrambi `.1`
+- Il _VIP_ per la **LAN** sarà `.10`
+- OPNsense1
+- - avrà come _indirizzo ip_ `ADDITIONAL_IP_ADDRESS` sulle interfaccia **WAN**
+- - avrà come _indirizzo ip_ `.11` sulle interfaccie **LAN** e **HA**
+- OPNsense2
+- - avrà come _indirizzo ip_ `.12` sulle interfaccie **LAN** e **HA**
+- Bastion
+- - avrà come _indirizzo ip_ `192.168.xxx.yyy` sull'interfaccia **LAN**. `xxx` dipende dalla **Region** e della **Rete Privata** (vRack vlanId). `yyy` dipende dal servizio dhcp o altra configurazione.
+
 ## Deploy Nets
 
 Definiamo la segmentazione regionale via reti private **vrack** con segmentazione o `vlan id`
@@ -340,7 +359,10 @@ DEPLOYING VPC opnsense PINK segment as 2046...
 \!/ CHECK IF segment PINK WAS DEPLOYED IN PAR as 2046 SUCCESSFUL \!/
 \!/ CHECK IF VPC opnsenseNETWORKs WERE DEPLOYED IN PAR SUCCESSFUL \!/
 ```
-VPC 198.168.0.0/16 , per esempio: 
+
+#### VPC 198.168.0.0/16
+
+per esempio: 
 
 > Parigi _(EU-WEST-PAR)_ come segue
 >
@@ -358,6 +380,16 @@ WAN IPs via vRack (RTvRack - **vlan 0**):
 | 57.130.12.88/30 | 57.130.12.88 | 57.130.12.89 | 57.130.12.90 | 57.130.12.91 |
 
 Per ogni Blocco IPv4 `net_cidr` 3 indirizzi di rete sono riservati come `address_network`, gateway `address_gateway` e broadcast `address_broadcast`. Rimane un solo un indirizzo utilizzabile `57.130.12.89` e lo associeremo all'interfaccia di rete **RED** _WAN/vlan 0_
+
+##### add Additional IP as opnsense alias
+
+> NOT EXPLORED YET!
+
+```bash
+ifconfig vtnet1 addaddr 57.130.12.88/30
+sysctl -w net.inet.ip.route.debug=2
+ifconfig vtnet1 plumb
+```
 
 | vpc_region | vpc_net_name | vpc_net_id | os_net_name | vpc_subnet |
 | ----- | ----- | ----- | ----- | ----- |
@@ -428,6 +460,17 @@ Saving to: ‘/tmp/opnsense-images/OPNsense-25.1-ufs-efi-vm-amd64.qcow2.bz2’
 2025-05-04 12:45:02 (37.6 MB/s) - ‘/tmp/opnsense-images/OPNsense-25.1-ufs-efi-vm-amd64.qcow2.bz2’ saved [1322712417/1322712417]
 ```
 
+### Get ISO
+
+[ref](https://opnsense.org/download/)
+
+Default settings are `OPN_ISO_IMAGE_VERSION=25.1`, `OPN_ISO_IMAGE_ARCH=amd64`, `OPN_ISO_IMAGE_CONSOLE=dvd`, `OPN_ISO_IMAGE_DISK_FORMAT=iso`
+
+```bash
+(techlab) dletizia@ovh vpc_opnsense-base % ./scripts/oscVPC-getImage-opnsenseISO.sh
+
+```
+
 ## IMPORT VM IMAGE
 
 Default settings are `OPN_VM_IMAGE_VERSION=25.1`, `OPN_VM_IMAGE_ARCH=amd64`, `OPN_VM_IMAGE_CONSOLE=efi`, `OPN_VM_IMAGE_FORMAT=qcow2`
@@ -471,15 +514,39 @@ Importiamo l'immagine della VM opnsense per la regione d'interesse
 ## CREATE SERVER FROM VM IMAGE
 
 ```bash
+(techlab) dletizia@ovh vpc_openstack-opnsense % openstack network list | grep VPC_opnsense
+| 1c6541ba-8628-4879-bb81-956bfd54fa9f | pn-VPC_opnsense-PAR-RED-0       |         67d12457-1c81-4c4a-af91-a4ef603da3f8   |
+| 5897f3d1-a87b-47da-9e51-36055e74ac6c | pn-VPC_opnsense-PAR-BLUE-2045   | 64d910be-4318-4a77-9600-2586e2382865   |
+| b0e8a967-b5f9-4f10-870d-889b0a0a1166 | pn-VPC_opnsense-PAR-PINK-2046   | b1e03146-d10c-45ed-8b32-1118729dae40   |
+| c58d46d3-47d1-4494-95fc-bc68e8e9acb6 | pn-VPC_opnsense-PAR-GREEN-2042  | c86cee82-0627-4887-9479-49c2081d4f6f   |
+| f8113a45-9243-4ad6-8f79-0d0a06b43995 | pn-VPC_opnsense-PAR-ORANGE-2044 | fb42bbdb-b2d2-4cff-88d1-e69814d0bc79   |
+```
+
+### upload ssh keypair
+```bash
+(techlab) dletizia@ovh vpc_openstack-opnsense % scripts/oscVPC-deplopyAllKeys.sh
+DEPLOYING SSHKEY IN PAR ...
++-------------+-------------------------------------------------+
+| Field       | Value                                           |
++-------------+-------------------------------------------------+
+| created_at  | None                                            |
+| fingerprint | 20:27:0b:cf:1a:82:48:73:8d:e9:e2:81:e7:73:96:60 |
+| id          | vpc-techlab_rsa                                 |
+| is_deleted  | None                                            |
+| name        | vpc-techlab_rsa                                 |
+| type        | ssh                                             |
+| user_id     | c6573dbfe8d44f29a6a38233ebe5bbcf                |
++-------------+-------------------------------------------------+
+\!/ CHECK IF THE SSHKEY WAS DEPLOYED IN PAR SUCCESSFUL \!/
+```
+
+#### list uploaded ssh keypair
+```bash
 (techlab) dletizia@ovh vpc_openstack-opnsense % openstack keypair list | grep vpc-techlab_rsa
 | vpc-techlab_rsa | 20:27:0b:cf:1a:82:48:73:8d:e9:e2:81:e7:73:96:60 | ssh  |
 ```
 
-```bash
-(techlab) dletizia@ovh vpc_openstack-opnsense % openstack network list | grep VPC_opnsense
-| e83d0f93-3b34-4975-8b37-d0454239ede8 | pn-VPC_opnsense-GRA-GREEN-2062 |  |
-| 6e59275c-4253-4583-8a5d-b680a2b3319a | pn-VPC_opnsense-GRA-RED-2063   | dbc238b5-73b7-4294-98c5-bb63a6f5c572 |
-```
+### deploy
 
 > `VPC_BASTION_NAME=bastion-VPC-opnsense-$VPC_REGION_NAME`
 >
@@ -487,13 +554,20 @@ Importiamo l'immagine della VM opnsense per la regione d'interesse
 
 ```bash
 (techlab) dletizia@ovh vpc_openstack-opnsense % openstack server create \
-    --image 'opnsense-25.1-efi' \
-    --flavor b3-8 \
-    --key-name vpc-techlab_rsa \
-    --network pn-VPC_opnsense-GRA-GREEN-2062 \
-    --network pn-VPC_opnsense-GRA-RED-2063 \
-    --availability-zone eu-west-par-a \
-    bastion-VPC-PAR-opnsense
+  --image OPNsense-25.1-ufs-<efi|serial>-vm-amd64 \
+  --flavor b3-32 \
+  --network pn-VPC_opnsense-PAR-GREEN-2042 \
+  --network pn-VPC_opnsense-PAR-RED-0 \
+  --network pn-VPC_opnsense-PAR-PINK-2046 \
+  --network pn-VPC_opnsense-PAR-ORANGE-2044 \
+  --network pn-VPC_opnsense-PAR-BLUE-2045 \
+  --availability-zone eu-west-par-<a|b|c> \
+  <opnsense-node-name>
+```
+
+```bash
+(techlab) dletizia@ovh vpc_openstack-opnsense % scripts/oscVPC-deployAllOPNs.sh
+
 ```
 
 # ISO Image via Openstack Horizon (ToDo)

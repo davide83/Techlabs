@@ -16,12 +16,16 @@ VPC_SEGMENT_BLUE_ID=2045
 VPC_NET_OPN_PINK=PINK
 VPC_SEGMENT_PINK_ID=2046
 
+# VPC_OPN_NODE_ID
+#VPC_OPN_NODE_ID=1
+VPC_OPN_NODE_ID=$1
+
 # VPC_ZONE
 #VPC_ZONE=eu-west-par-b
-VPC_ZONE=$1
+VPC_ZONE=$2
 
 # Import SSH public key to os region as trusted keypair
-VPC_SSHKEY_NAME=vpc-techlab_rsa
+#VPC_SSHKEY_NAME=vpc-techlab_rsa
 
 # Get the regional segmented privateNetwork ID
 VPC_NET_GREEN_NAME=pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_NET_OPN_GREEN-$VPC_SEGMENT_GREEN_ID
@@ -42,19 +46,19 @@ echo "$VPC_NET_PINK_NAME id: $VPC_NET_PINK_ID"
 
 
 # CREATE Bastion Host
-#OPN_VM_IMAGE_NAME='OPNsense-25.1-ufs-efi-vm-amd64'
+OPN_VM_IMAGE_NAME='OPNsense-25.1-ufs-efi-vm-amd64'
 #OPN_VM_IMAGE_NAME='OPNsense-25.1-ufs-serial-vm-amd64'
-VPC_BASTION_NAME="bastion-$VPC_REGION_NAME-VPC_opnsense"
-echo "CREATING VPC_BASTION_NAME: $VPC_BASTION_NAME"
+VPC_BASTION_NAME="$VPC_REGION_NAME-opnsense-$VPC_OPN_NODE_ID"
+echo "CREATING VPC_OPN_NODE: $VPC_BASTION_NAME"
 
 openstack server create \
-  --description "Bastion Host (VPC_opnsense-base) in $VPC_REGION_NAME" \
-  --image "Ubuntu 22.04" \
-  --flavor b3-4 \
+  --description "OPN Node $VPC_OPN_NODE_ID (VPC_opnsense-base) in $VPC_REGION_NAME" \
+  --image $OPN_VM_IMAGE_NAME \
+  --flavor b3-16 \
   --network $VPC_NET_GREEN_ID \
-  --network "Ext-Net" \
+  --network $VPC_NET_RED_ID \
+  --network $VPC_NET_PINK_ID \
   --availability-zone $VPC_ZONE \
-  --key-name $VPC_SSHKEY_NAME \
   $VPC_BASTION_NAME
 
-echo "BASTION $VPC_BASTION_NAME CREATED!"
+echo "OPN $VPC_BASTION_NAME NODE CREATED!"
