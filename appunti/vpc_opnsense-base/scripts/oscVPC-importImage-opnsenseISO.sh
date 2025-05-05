@@ -19,9 +19,9 @@ echo "ECHO .> Importing..."
 # IMPORT VM IMAGE
 openstack image create \
     --container-format bare \
-    --disk-format $OPN_VM_IMAGE_DISK_FORMAT \
+    --disk-format $OPN_ISO_IMAGE_DISK_FORMAT \
     --file $OPN_TMP_FILE_ISO \
     OPNsense-$OPN_ISO_IMAGE_VERSION.$OPN_ISO_IMAGE_DISK_FORMAT
 
 # Echo
-echo "ECHO .> OPNsense-$OPN_VM_IMAGE_VERSION-ufs-$OPN_VM_IMAGE_CONSOLE-vm-$OPN_VM_IMAGE_ARCH Imported!"
+echo "ECHO .> Image $OPN_TMP_FILE_ISO Imported!"

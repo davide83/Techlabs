@@ -8,7 +8,7 @@
 #     One of this: [PAR|MIL|GRA|LIM]        #
 #############################################
 # Examples:
-# $ ./oscVPC-deployAllOPNs.sh <VPC_REGION_NAME>
+# $ ./oscVPC-deployAllNetworks.sh <VPC_REGION_NAME>
 #
 
 # Input parameters

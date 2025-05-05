@@ -50,7 +50,7 @@ echo "CREATING VPC_BASTION_NAME: $VPC_BASTION_NAME"
 openstack server create \
   --description "Bastion Host (VPC_opnsense-base) in $VPC_REGION_NAME" \
   --image "Ubuntu 22.04" \
-  --flavor b3-4 \
+  --flavor c3-4 \
   --network $VPC_NET_GREEN_ID \
   --network "Ext-Net" \
   --availability-zone $VPC_ZONE \
