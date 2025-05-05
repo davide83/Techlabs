@@ -1,34 +1,53 @@
 #!/bin/bash
+#############################################
+#        oscVPC-deployAllBastions.sh        #
+#############################################
+#     Input parameters                      #
+# (1) VPC_REGION_NAME - required            #
+#     One of this: [PAR|MIL|GRA|LIM]        #
+#############################################
+# Examples:
+# $ ./oscVPC-deployAllOPNs.sh <VPC_REGION_NAME>
+#
 
-#### VPC BASTIONS
+# Input parameters
+VPC_REGION_NAME="${1}"
 
-# ### EU - Italy
+## Tests input parameters
+TESTRESULT=0
+# nb params
+if [ $# -lt 1 -o $# -gt 2 ]
+then
+    echo "ERROR - Incorrect number of input parameters - Must be a VPC_REGION_NAME [PAR|MIL|GRA|LIM]"
+    TESTRESULT=1
+    exit $TESTRESULT
+fi
 
-# ## VPC BASTION 1 - MIL
-# VPC_REGION_NAME=MIL
-# echo "DEPLOYING BASTION IN $VPC_REGION_NAME ..."
-# scripts/oscVPC-deployBastion-mil.sh
-# echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
-
-# ### EU - Germany
-
-# ## VPC BASTION 2 - LIM
-# VPC_REGION_NAME=LIM
-# echo "DEPLOYING BASTION IN $VPC_REGION_NAME ..."
-# scripts/oscVPC-deployBastion-lim.sh
-# echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
-
-### EU - France
-
-# ## VPC BASTION 3 - GRA
-# VPC_REGION_NAME=GRA
-# echo "DEPLOYING BASTION IN $VPC_REGION_NAME ..."
-# scripts/oscVPC-deployBastion-gra.sh
-# echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
-
-## VPC BASTION 4 - PAR
-VPC_REGION_NAME=PAR
-VPC_ZONE=eu-west-par-c
-echo "DEPLOYING BASTION IN $VPC_REGION_NAME on $VPC_ZONE zone"
-scripts/oscVPC-deployBastion-par.sh $VPC_ZONE
-echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
+# VPC_REGION_NAME
+case $VPC_REGION_NAME in
+    ## VPC BASTION 1 - MIL
+    MIL) TESTRESULT=3
+    echo "WARNING - Input VPC_REGION_NAME=MIL not allowed yet - Must be in [PAR|GRA]"
+    exit $TESTRESULT;;
+    ## VPC BASTION 2 - LIM
+    LIM) TESTRESULT=3
+    echo "WARNING - Input VPC_REGION_NAME=LIM not allowed yet - Must be in [PAR|GRA]"
+    exit $TESTRESULT;;
+    ## VPC BASTION 3 - GRA
+    GRA) TESTRESULT=0
+    echo "DEPLOYING BASTION IN $VPC_REGION_NAME on mono zone"
+    scripts/oscVPC-createBastion-gra.sh $VPC_ZONE
+    echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
+    exit $TESTRESULT;;
+    ## VPC BASTION 4 - PAR
+    PAR) TESTRESULT=0
+    VPC_ZONE=eu-west-par-c
+    echo "DEPLOYING BASTION IN $VPC_REGION_NAME on $VPC_ZONE zone"
+    scripts/oscVPC-createBastion-par.sh $VPC_ZONE
+    echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
+    exit $TESTRESULT;;
+    ## ALL(*)
+    *) TESTRESULT=2
+    echo "ERROR - Input VPC_REGION_NAME not allowed - Must be in [MIL|LIM|PAR|GRA]"
+    exit $TESTRESULT;;
+esac

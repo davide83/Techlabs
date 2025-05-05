@@ -35,7 +35,7 @@ Sulla base degli indirizzi che sceglieremo per ler reti **WAN** _(RED)_, **LAN**
 - Bastion
 - - avrà come _indirizzo ip_ `192.168.xxx.yyy` sull'interfaccia **LAN**. `xxx` dipende dalla **Region** e della **Rete Privata** (vRack vlanId). `yyy` dipende dal servizio dhcp o altra configurazione.
 
-apply the manifest and you will have the archi deployed. Now you need to configure the OPNsense in HA mode.
+Eseguendo gli `script` avremo l'architettura messa in opera e così saremo in grado di configurare OPNsense nella modalità HA.
 
 ## Deploy Nets
 
@@ -49,9 +49,9 @@ Definiamo una segmentazione per pseudo_port/vlan_id, per esempio a _**Paris** - 
 | ----- | ----- | ----- | ----- | ----- |
 | LAN | SI | 2042 | GREEN | lan/management |
 | WAN | SI | 0 _(untagged)_ | RED | wan |
-| OPT-1 (DMZ) | SI | 2044 | ORANGE | dmz |
-| OPT-2 (VPN) | SI | 2045 | BLUE | vpn |
-| OPT-3 (CARP) | SI | 2046 | PINK | transit/carp/vrrp |
+| OPT-2 (DMZ) | SI | 2044 | ORANGE | dmz |
+| OPT-3 (VPN) | SI | 2045 | BLUE | vpn |
+| OPT-1 (HA) | SI | 2046 | PINK | transit/ha/carp/vrrp |
 
 > Public Cloud Local Zone deployment doesn't support importing custom images yet! ETA on GA to be confirmed!
 
@@ -71,13 +71,13 @@ per esempio:
 
 > Parigi _(EU-WEST-PAR)_ come segue
 
-| vpc_region | vpc_net_name | vpc_net_id | os_net_name | vpc_subnet |
-| ----- | ----- | ----- | ----- | ----- |
-| PAR | GREEN | 2042 | pn-VPC_opnsense-GRA-GREEN-2042 | 192.168.42.0/24 |
-| PAR | RED | 0 | pn-VPC_opnsense-PAR-RED-0 | 192.168.43.0/24 |
-| PAR | ORANGE | 2044 | pn-VPC_opnsense-PAR-ORANGE-2044 | 192.168.44.0/24 |
-| PAR | BLUE | 2045 | pn-VPC_opnsense-PAR-BLUE-2045 | 192.168.45.0/24 |
-| PAR | PINK | 2046 | pn-VPC_opnsense-PAR-PINK-2046 | 192.168.46.0/24 |
+| vpc_segment_contex | vpc_region | vpc_segment_name | vpc_segment_id | os_net_name | vpc_subnet |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| lan | PAR | GREEN | 2042 | pn-VPC_opnsense-GRA-GREEN-2042 | 192.168.42.0/24 |
+| wan | PAR | RED | 0 | pn-VPC_opnsense-PAR-RED-0 | 192.168.43.0/24 |
+| dmz | PAR | ORANGE | 2044 | pn-VPC_opnsense-PAR-ORANGE-2044 | 192.168.44.0/24 |
+| vpn | PAR | BLUE | 2045 | pn-VPC_opnsense-PAR-BLUE-2045 | 192.168.45.0/24 |
+| ha | PAR | PINK | 2046 | pn-VPC_opnsense-PAR-PINK-2046 | 192.168.46.0/24 |
 
 ![alt text](images/pn-VPC_opnsense-PAR-X-Y.png)
 
@@ -409,33 +409,33 @@ ifconfig vtnet1 plumb
 
 > Milano _(EU-SOUTH-MIL)_ come segue
 
-| vpc_region | vpc_net_name | vpc_net_id | os_net_name | vpc_subnet |
-| ----- | ----- | ----- | ----- | ----- |
-| MIL | GREEN | 2052 | pn-VPC_opnsense-MIL-GREEN-2052 | 192.168.52.0/24 |
-| MIL | RED | 0 | pn-VPC_opnsense-MIL-RED-0 | 192.168.53.0/24 |
-| MIL | ORANGE | 2054 | pn-VPC_opnsense-MIL-ORANGE-2054 | 192.168.54.0/24 |
-| MIL | BLUE | 2055 | pn-VPC_opnsense-MIL-BLUE-2055 | 192.168.55.0/24 |
-| MIL | PINK | 2056 | pn-VPC_opnsense-MIL-PINK-2056 | 192.168.56.0/24 |
+| vpc_segment_contex | vpc_region | vpc_segment_name | vpc_segment_id | os_net_name | vpc_subnet |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| lan | MIL | GREEN | 2052 | pn-VPC_opnsense-MIL-GREEN-2052 | 192.168.52.0/24 |
+| wan | MIL | RED | 0 | pn-VPC_opnsense-MIL-RED-0 | 192.168.53.0/24 |
+| dmz | MIL | ORANGE | 2054 | pn-VPC_opnsense-MIL-ORANGE-2054 | 192.168.54.0/24 |
+| vpn | MIL | BLUE | 2055 | pn-VPC_opnsense-MIL-BLUE-2055 | 192.168.55.0/24 |
+| ha | MIL | PINK | 2056 | pn-VPC_opnsense-MIL-PINK-2056 | 192.168.56.0/24 |
 
-> Gravelines _(GRA11)_ come segue
+> Gravelines _(GRA9|GRA11)_ come segue
 
-| vpc_region | vpc_net_name | vpc_net_id | os_net_name | vpc_subnet |
-| ----- | ----- | ----- | ----- | ----- |
-| GRA | GREEN | 2062 | pn-VPC_opnsense-GRA-GREEN-2062 | 192.168.62.0/24 |
-| GRA | RED | 0 | pn-VPC_opnsense-GRA-RED-0 | 192.168.63.0/24 |
-| GRA | ORANGE | 2064 | pn-VPC_opnsense-GRA-ORANGE-2064 | 192.168.64.0/24 |
-| GRA | BLUE | 2065 | pn-VPC_opnsense-GRA-BLUE-2065 | 192.168.65.0/24 |
-| GRA | PINK | 2066 | pn-VPC_opnsense-GRA-PINK-2066 | 192.168.66.0/24 |
+| vpc_segment_contex | vpc_region | vpc_segment_name | vpc_segment_id | os_net_name | vpc_subnet |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| lan | GRA | GREEN | 2062 | pn-VPC_opnsense-GRA-GREEN-2062 | 192.168.62.0/24 |
+| wan | GRA | RED | 0 | pn-VPC_opnsense-GRA-RED-0 | 192.168.63.0/24 |
+| dmz | GRA | ORANGE | 2064 | pn-VPC_opnsense-GRA-ORANGE-2064 | 192.168.64.0/24 |
+| vpn | GRA | BLUE | 2065 | pn-VPC_opnsense-GRA-BLUE-2065 | 192.168.65.0/24 |
+| ha | GRA | PINK | 2066 | pn-VPC_opnsense-GRA-PINK-2066 | 192.168.66.0/24 |
 
 > Limburg _(DE1)_ come segue
 
-| vpc_region | vpc_net_name | vpc_net_id | os_net_name | vpc_subnet |
-| ----- | ----- | ----- | ----- | ----- |
-| LIM | GREEN | 2072 | pn-VPC_opnsense-LIM-GREEN-2072 | 192.168.72.0/24 |
-| LIM | RED | 0 | pn-VPC_opnsense-LIM-RED-0 | 192.168.73.0/24 |
-| LIM | ORANGE | 2074 | pn-VPC_opnsense-GRA-ORANGE-2074 | 192.168.74.0/24 |
-| LIM | BLUE | 2075 | pn-VPC_opnsense-GRA-BLUE-2075 | 192.168.75.0/24 |
-| LIM | PINK | 2076 | pn-VPC_opnsense-GRA-PINK-2076 | 192.168.76.0/24 |
+| vpc_segment_contex | vpc_region | vpc_segment_name | vpc_segment_id | os_net_name | vpc_subnet |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| lan | LIM | GREEN | 2072 | pn-VPC_opnsense-LIM-GREEN-2072 | 192.168.72.0/24 |
+| wan | LIM | RED | 0 | pn-VPC_opnsense-LIM-RED-0 | 192.168.73.0/24 |
+| dmz | LIM | ORANGE | 2074 | pn-VPC_opnsense-GRA-ORANGE-2074 | 192.168.74.0/24 |
+| vpn | LIM | BLUE | 2075 | pn-VPC_opnsense-GRA-BLUE-2075 | 192.168.75.0/24 |
+| ha | LIM | PINK | 2076 | pn-VPC_opnsense-GRA-PINK-2076 | 192.168.76.0/24 |
 
 # VM Image via Openstack Client
 
