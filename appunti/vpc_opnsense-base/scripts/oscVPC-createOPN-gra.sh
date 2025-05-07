@@ -50,7 +50,7 @@ echo "CREATING VPC_OPN_NODE: $VPC_BASTION_NAME"
 openstack server create \
   --description "OPN Node #$VPC_OPN_NODE_ID (VPC_opnsense-base) in $VPC_REGION_NAME" \
   --image $OPN_VM_IMAGE_NAME \
-  --flavor b3-16 \
+  --flavor c3-4 \
   --network $VPC_NET_GREEN_ID \
   --network $VPC_NET_RED_ID \
   --network $VPC_NET_PINK_ID \

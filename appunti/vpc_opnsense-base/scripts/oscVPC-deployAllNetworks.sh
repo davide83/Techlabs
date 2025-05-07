@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #############################################
-#        oscVPC-deployAllNetworks.sh        #
+#       oscVPC-deployAllNetworks.sh         #
 #############################################
 #     Input parameters                      #
 # (1) VPC_REGION_NAME - required            #
@@ -27,11 +27,11 @@ fi
 # VPC_REGION_NAME
 case $VPC_REGION_NAME in
     ## VPC BASTION 1 - MIL
-    MIL) echo "WARNING - Input VPC_REGION_NAME=MIL not allowed yet - Must be in [PAR|GRA]"
+    MIL) echo "WARNING - Input VPC_REGION_NAME=MIL not allowed yet - Must be in [PAR|GRA|LIM]"
     TESTRESULT=3
     exit $TESTRESULT;;
     ## VPC BASTION 2 - LIM
-    LIM) echo "WARNING - Input VPC_REGION_NAME=LIM not allowed yet - Must be in [PAR|GRA]"
+    LIM) echo "WARNING - Input VPC_REGION_NAME=LIM not supported yet - Must be in [PAR|GRA]"
     TESTRESULT=3
     exit $TESTRESULT;;
     GRA) echo "DEPLOYING VPC opnsenseNETWORKs IN $VPC_REGION_NAME ..."
@@ -43,35 +43,21 @@ case $VPC_REGION_NAME in
     export VPC_SEGMENT_ID=2062
     export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
     echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-gra-GREEN.sh
+    scripts/oscVPC-createNetLANgreen-gra.sh
     echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
     ## VPC NET 2 - RED (WAN | 0)
     export VPC_SEGMENT_NAME=RED
     export VPC_SEGMENT_ID=0
     export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
     echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-gra-RED.sh
+    scripts/oscVPC-createNetWANred-gra.sh
     echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
-    ## VPC NET 3 - ORANGE (DMZ | 2064)
-    export VPC_SEGMENT_NAME=ORANGE
-    export VPC_SEGMENT_ID=2064
-    export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
-    echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-gra-ORANGE.sh
-    echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
-    ## VPC NET 4 - BLUE (VPN | 2065)
-    export VPC_SEGMENT_NAME=BLUE
-    export VPC_SEGMENT_ID=2065
-    export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
-    echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-gra-BLUE.sh
-    echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
-    ## VPC NET 5 - PINK (CARP | 2066)
+    ## VPC NET 3 - PINK (HA | 2066)
     export VPC_SEGMENT_NAME=PINK
     export VPC_SEGMENT_ID=2066
     export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
     echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-gra-PINK.sh
+    scripts/oscVPC-createNetHApink-gra.sh
     echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
     echo "\!/ CHECK IF VPC opnsenseNETWORKs WERE DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
     TESTRESULT=0
@@ -85,35 +71,21 @@ case $VPC_REGION_NAME in
     export VPC_SEGMENT_ID=2042
     export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
     echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-par-GREEN.sh
+    scripts/oscVPC-createNetLANgreen-par.sh
     echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
     ## VPC NET 2 - RED (WAN | 0)
     export VPC_SEGMENT_NAME=RED
     export VPC_SEGMENT_ID=0
     export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
     echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-par-RED.sh
+    scripts/oscVPC-createNetWANred-par.sh
     echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
-    ## VPC NET 3 - ORANGE (DMZ | 2044)
-    export VPC_SEGMENT_NAME=ORANGE
-    export VPC_SEGMENT_ID=2044
-    export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
-    echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-par-ORANGE.sh
-    echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
-    ## VPC NET 4 - BLUE (VPN | 2045)
-    export VPC_SEGMENT_NAME=BLUE
-    export VPC_SEGMENT_ID=2045
-    export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
-    echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-par-BLUE.sh
-    echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
-    ## VPC NET 5 - PINK (CARP | 2046)
+    ## VPC NET 3 - PINK (CARP | 2046)
     export VPC_SEGMENT_NAME=PINK
     export VPC_SEGMENT_ID=2046
     export VPC_NET_NAME="pn-VPC_opnsense-$VPC_REGION_NAME-$VPC_SEGMENT_NAME-$VPC_SEGMENT_ID"
     echo "DEPLOYING VPC opnsense $VPC_SEGMENT_NAME segment as $VPC_SEGMENT_ID..."
-    scripts/oscVPC-createNetwork-par-PINK.sh
+    scripts/oscVPC-createNetHApink-par.sh
     echo "\!/ CHECK IF segment $VPC_SEGMENT_NAME WAS DEPLOYED IN $VPC_REGION_NAME as $VPC_SEGMENT_ID SUCCESSFUL \!/"
     echo "\!/ CHECK IF VPC opnsenseNETWORKs WERE DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
     TESTRESULT=0

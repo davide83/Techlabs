@@ -38,7 +38,7 @@ case $VPC_REGION_NAME in
     exit $TESTRESULT;;
     ## VPC BASTION 2 - LIM
     LIM) VPC_REGION_NAME=LIM
-    export OS_REGION_NAME=EU-WEST-PAR
+    export OS_REGION_NAME=DE1
     echo "DEPLOYING SSHKEY IN $VPC_REGION_NAME ..."
     # Import SSH public key to os region as trusted keypair
     openstack keypair create \
@@ -49,7 +49,7 @@ case $VPC_REGION_NAME in
     exit $TESTRESULT;;
     ## VPC BASTION 3 - GRA
     GRA) VPC_REGION_NAME=GRA
-    export OS_REGION_NAME=EU-WEST-PAR
+    export OS_REGION_NAME=GRA9 # GRA9 / GRA11
     echo "DEPLOYING SSHKEY IN $VPC_REGION_NAME ..."
     # Import SSH public key to os region as trusted keypair
     openstack keypair create \

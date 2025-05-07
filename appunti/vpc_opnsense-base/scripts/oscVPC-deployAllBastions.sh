@@ -31,20 +31,20 @@ case $VPC_REGION_NAME in
     exit $TESTRESULT;;
     ## VPC BASTION 2 - LIM
     LIM) TESTRESULT=3
-    echo "WARNING - Input VPC_REGION_NAME=LIM not allowed yet - Must be in [PAR|GRA]"
+    echo "WARNING - Input VPC_REGION_NAME=LIM not supported yet - Must be in [PAR|GRA]"
     exit $TESTRESULT;;
     ## VPC BASTION 3 - GRA
-    GRA) TESTRESULT=0
-    echo "DEPLOYING BASTION IN $VPC_REGION_NAME on mono zone"
+    GRA) echo "DEPLOYING BASTION IN $VPC_REGION_NAME on mono zone"
     scripts/oscVPC-createBastion-gra.sh $VPC_ZONE
     echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
+    TESTRESULT=0
     exit $TESTRESULT;;
     ## VPC BASTION 4 - PAR
-    PAR) TESTRESULT=0
-    VPC_ZONE=eu-west-par-c
+    PAR) VPC_ZONE=eu-west-par-c
     echo "DEPLOYING BASTION IN $VPC_REGION_NAME on $VPC_ZONE zone"
     scripts/oscVPC-createBastion-par.sh $VPC_ZONE
     echo "\!/ CHECK IF THE BASTION WAS DEPLOYED IN $VPC_REGION_NAME SUCCESSFUL \!/"
+    TESTRESULT=0
     exit $TESTRESULT;;
     ## ALL(*)
     *) TESTRESULT=2

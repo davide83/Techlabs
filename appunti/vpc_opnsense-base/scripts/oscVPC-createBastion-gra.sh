@@ -49,7 +49,6 @@ openstack server create \
   --flavor c3-4 \
   --network $VPC_NET_GREEN_ID \
   --network "Ext-Net" \
-  --availability-zone $VPC_ZONE \
   --key-name $VPC_SSHKEY_NAME \
   $VPC_BASTION_NAME
 
